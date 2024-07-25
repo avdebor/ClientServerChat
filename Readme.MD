@@ -23,7 +23,7 @@ This is a simple console-based chat application written in C++. It uses Windows 
    git clone https://github.com/avdebor/ClientServerChat.git
    cd ClientServerChat
 2. Open the project in Visual Studio:
-	- Open console-chat-app.sln in Visual Studio.
+	- Open WinSockServer.sln in Visual Studio.
 3. Build the project:
 	- Build the solution using Ctrl+Shift+B. 
 
