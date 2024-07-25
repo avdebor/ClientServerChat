@@ -1,3 +1,3 @@
 ﻿  WinSockClient.cpp
-D:\C++\WinSocket\cleint\WinSockServer\WinSockClient\WinSockClient.cpp(49,55): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+D:\C++\WinSocket\cleint\WinSockServer\WinSockClient\WinSockClient.cpp(23,55): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
   WinSockClient.vcxproj -> D:\C++\WinSocket\cleint\WinSockServer\x64\Debug\WinSockClient.exe

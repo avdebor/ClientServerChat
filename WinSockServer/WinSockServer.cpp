@@ -1,6 +1,6 @@
 ﻿#include "Include.h"
 
-void InteractWithClient(SOCKET clientSocket){
+void InteractWithClient(SOCKET clientSocket, std::vector<SOCKET>& cleints){
     //send/recv cleint
     std::cout << "client connected" << std::endl;
     char buffer[4069];
@@ -15,6 +15,18 @@ void InteractWithClient(SOCKET clientSocket){
 
         std::string message(buffer, bytesrecvd);
         std::cout << "message from client : " << message << std::endl;
+
+        for (auto client : cleints) {
+            if (client != clientSocket) {
+                send(client, message.c_str(), message.length(), 0);
+
+            }
+        }
+    }
+
+    auto it = find(cleints.begin(), cleints.end(), clientSocket);
+    if (it != cleints.end()) {
+        cleints.erase(it);
     }
 
     closesocket(clientSocket);
@@ -82,7 +94,8 @@ int main()
         }
 
         cleints.push_back(clientSocket);
-        std::thread t1(InteractWithClient, clientSocket);
+        std::thread t1(InteractWithClient, clientSocket, std::ref(cleints));
+        t1.detach();
     }
 
     closesocket(listenSocket);

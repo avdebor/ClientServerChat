@@ -1,13 +1,54 @@
-﻿#include <iostream>
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-#include <tchar.h>
-#pragma comment(lib, "ws2_32.lib")
+﻿#include "Include.h"
 
 
 bool Initialize() {
     WSADATA data;
     return WSAStartup(MAKEWORD(2, 2), &data) == 0;
+}
+
+void SendMsg(SOCKET s) {
+    std::cout << "enter your user name :" << std::endl;
+    std::string name;
+    std::getline(std::cin, name); 
+    std::string message;
+
+    while (true) {
+        std::getline(std::cin, message);
+        std::string msg = name + " : " + message;
+        int bytesent = send(s, msg.c_str(), msg.length(), 0);
+
+        if (bytesent == SOCKET_ERROR) {
+            std::cout << "[!] error sending message" << std::endl;
+            break;
+        }
+
+        if (message == "quit") {
+            std::cout << "[!] stopping the application" << std::endl;
+            break;
+        }
+    }
+    closesocket(s);
+    WSACleanup();
+}
+
+void ReciveMsg(SOCKET s) {
+    char buffer[4096];
+    int recvlength;
+    std::string msg = "";
+
+    while (true) {
+        recvlength = recv(s, buffer, sizeof(buffer), 0);
+        if (recvlength <= 0) {
+            std::cout << "[!] disconnected from server" << std::endl;
+            break;
+        }
+        else {
+            msg = std::string(buffer, recvlength);
+            std::cout << msg << std::endl;
+        }
+    }
+    closesocket(s);
+    WSACleanup();
 }
 
 int main()
@@ -36,6 +77,7 @@ int main()
 
     if (connect(s, reinterpret_cast<sockaddr*>(&serveraddr), sizeof(serveraddr)) == SOCKET_ERROR) {
         std::cout << "[!] not able to connect to server" << std::endl;
+        std::cout << ": " << WSAGetLastError();
         closesocket(s);
         WSACleanup();
         return 1;
@@ -43,17 +85,12 @@ int main()
 
     std::cout << "successfully connected to the server" << std::endl;
 
-    //send/recive
-    std::string message = "hello there";
-    int bytesent;
-    bytesent = send(s, message.c_str(), message.length(), 0);
-    if (bytesent == SOCKET_ERROR) {
-        std::cout << "[!] send failed" << std::endl;
-    }
+    std::thread senderthread(SendMsg, s);
+    std::thread reciver(ReciveMsg, s);
 
-    closesocket(s);
+    senderthread.join();
+    reciver.join();
 
-    WSACleanup();
     return 0;
 }
 //52:16
