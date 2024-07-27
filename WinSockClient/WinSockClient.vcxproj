@@ -129,6 +129,9 @@
   <ItemGroup>
     <ClCompile Include="WinSockClient.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
